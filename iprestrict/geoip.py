@@ -1,25 +1,21 @@
 # -*- coding: utf-8 -*-
-'''Client-side wrapper lib around GeoIP.
+"""Client-side wrapper lib around GeoIP.
 
-By using this module we allow:
-    - if GeoIP2 is unavailable (pre Django 1.9) fall back on GeoIP
-    - make the geoip module optional. If the user opts out we don't fail on importing required modules
-'''
+By using this we make the geoip module optional. ie. don't fail if the user opts out of using
+GEOIP.
+"""
 from __future__ import unicode_literals
 
 from django.core.exceptions import ImproperlyConfigured
 from django.conf import settings
 
-available_geoip = 2
 try:
     from django.contrib.gis.geoip2 import GeoIP2
     from geoip2.errors import AddressNotFoundError
+    geoip_available = True
 except ImportError:
-    available_geoip = 1
-    try:
-        from django.contrib.gis.geoip import GeoIP
-    except ImportError:
-        available_geoip = None
+    geoip_available = False
+
 try:
     from pycountry import countries
 except ImportError:
@@ -59,12 +55,12 @@ class OurGeoIP(object):
 
 _geoip = OurGeoIP()
 if getattr(settings, 'IPRESTRICT_GEOIP_ENABLED', True):
-    if available_geoip is None:
+    if not geoip_available:
         raise ImproperlyConfigured(
-            "'IPRESTRICT_GEOIP_ENABLED' is set to True, but neither geoip nor geoip2 is available "
+            "'IPRESTRICT_GEOIP_ENABLED' is set to True, but geoip2 is NOT available "
             " to import. Make sure the geoip libraries are installed as described in the Django "
             "documentation")
-    _geoip = AdaptedGeoIP2() if available_geoip == 2 else GeoIP()
+    _geoip = AdaptedGeoIP2()
 
 
 def get_geoip():
@@ -74,8 +70,5 @@ def get_geoip():
 def is_valid_country_code(code):
     if code == NO_COUNTRY:
         return True
-    try:
-        countries.get(alpha_2=code)
-        return True
-    except KeyError:
-        return False
+    country = countries.get(alpha_2=code)
+    return country is not None

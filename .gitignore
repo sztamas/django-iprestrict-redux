@@ -4,6 +4,7 @@
 db.sqlite3
 /build/
 /virt_django-iprestrict/
+/venv*
 /docs/_build/
 *.egg-info
 *.egg

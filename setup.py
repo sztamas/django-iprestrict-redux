@@ -46,9 +46,8 @@ setup(
     ],
     extras_require={
         'geoip': [
-            'pycountry==17.5.14',
-            'geoip2==2.5.0',
-            'GeoIP==1.3.2',
+            'pycountry==20.7.3',
+            'geoip2==4.0.2',
             ],
         'dev': [
             'tox',

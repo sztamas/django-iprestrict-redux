@@ -1,13 +1,10 @@
 sudo: false
 language: python
 python:
-  - "2.7"
-  - "3.4"
   - "3.5"
   - "3.6"
-  # TODO Python 3.7 not working on Travis CI
-  # https://github.com/travis-ci/travis-ci/issues/9552
-  # - "3.7"
+  - "3.7"
+  - "3.8"
 env:
   global:
     - RUNTEST_ARGS="-v --noinput"
