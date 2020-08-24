@@ -2,6 +2,7 @@ import os
 import re
 from setuptools import setup
 
+
 def get_package_version(package):
     version = re.compile(r"(?:__)?version(?:__)?\s*=\s\"(.*)\"", re.I)
     initfile = os.path.join(os.path.dirname(__file__), package, "__init__.py")
@@ -12,15 +13,24 @@ def get_package_version(package):
     return "UNKNOWN"
 
 
+def get_package_data():
+    return [
+        os.path.join(root, f) for d in ('templates', 'static')
+        for root, _, files in os.walk('iprestrict/{}'.format(d))
+        for f in files]
+
+
 setup(
-    name='django-iprestrict',
+    name='django-iprestrict-redux',
     version=get_package_version("iprestrict"),
-    description='Django app + middleware to restrict access to all or sections of a Django project by client IP ranges',
-    long_description='Django app + middleware to restrict access to all or sections of a Django project by client IP ranges',
-    author='Tamas Szabo, CCG, Murdoch University',
-    author_email='devops@ccg.murdoch.edu.au',
-    url='https://github.com/muccg/django-iprestrict',
-    download_url='https://github.com/muccg/django-iprestrict/releases',
+    description=('Django app + middleware to restrict access to all or sections of a '
+                 'Django project by client IP ranges'),
+    long_description=('Django app + middleware to restrict access to all or sections of a '
+                      'Django project by client IP ranges'),
+    author='Tamas Szabo, CCG - Murdoch University',
+    author_email='me@tamas-szabo.com',
+    url='https://github.com/sztamas/django-iprestrict-redux',
+    download_url='https://github.com/sztamas/django-iprestrict-redux/releases',
     classifiers=[
         "Framework :: Django",
         "Intended Audience :: Developers",
@@ -35,20 +45,17 @@ setup(
         'iprestrict.migrations',
     ],
     package_data={
-        'iprestrict': [os.path.join(root, f) for d in ('templates', 'static')
-                                             for root, _, files in os.walk('iprestrict/{}'.format(d))
-                                             for f in files]
+        'iprestrict': get_package_data()
     },
     include_package_data=True,
     zip_safe=False,
     install_requires=[
-        'Django>=1.8',
+        'Django>=2.2',
     ],
     extras_require={
         'geoip': [
-            'pycountry==17.5.14',
-            'geoip2==2.5.0',
-            'GeoIP==1.3.2',
+            'pycountry==20.7.3',
+            'geoip2==4.0.2',
             ],
         'dev': [
             'tox',
