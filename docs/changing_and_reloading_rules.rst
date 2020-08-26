@@ -43,5 +43,5 @@ You would also have to reload the rules or restart the server (depending on what
 
   $ ./manage.py reload_rules
 
-*Or again, as an alternative just visit the ``iprestrict/reload_rules`` URL as mentioned above.*
+Or again, as an alternative just visit the ``iprestrict/reload_rules`` URL as mentioned above.
 
