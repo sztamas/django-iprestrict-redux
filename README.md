@@ -19,6 +19,6 @@ ___
 
 Django app + middleware to restrict access to all or sections of a Django project by client IP ranges.
 
-The full instructions for installation and use are here:
+For installation and usage information please Read the Docs:
 
   http://django-iprestrict-redux.readthedocs.org/en/latest/
