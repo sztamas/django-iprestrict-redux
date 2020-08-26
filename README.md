@@ -11,6 +11,8 @@ The original project isn't maintained anymore by my previous employer, so I took
 See the comments on the following Pull Request and Issue for more background info:
 * https://github.com/muccg/django-iprestrict/pull/57
 * https://github.com/muccg/django-iprestrict/issues/60
+
+Switching to `django-iprestrict-redux` is as easy as declaring `django-iprestrict-redux` instead of `django-iprestrict` as a dependency in whatever you use for managing dependencies. (ex. setup.py, requirements files, poetry etc.)
 ___
 
 Django app + middleware to restrict access to all or sections of a Django project by client IP ranges.
