@@ -1,0 +1,43 @@
+[tool.poetry]
+name = "django-iprestrict-redux"
+version = "1.8.1"
+description = "Django app + middleware to restrict access to all or sections of a Django project by client IP ranges"
+authors = ["Tamas Szabo <me@tamas-szabo.com>"]
+maintainers = ["Tamas Szabo <me@tamas-szabo.com>"]
+license = "MIT"
+repository = "https://github.com/sztamas/django-iprestrict-redux"
+documentation = "http://django-iprestrict-redux.readthedocs.org/en/latest"
+classifiers = [
+    "Framework :: Django",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Software Development"
+]
+
+packages = [
+  { include = "iprestrict" }
+]
+
+[tool.poetry.dependencies]
+python = "^3.6"
+
+# Optional dependecies - extras
+pycountry = {version = "^20.7.3", optional = true}
+geoip2 = {version = "^4.0.2", optional = true}
+
+[tool.poetry.dev-dependencies]
+Django = "^3.1"
+tox = "^3.19.0"
+pep8 = "^1.7.1"
+flake8 = "^3.8.3"
+Sphinx = "^3.2.1"
+django-extensions = "^3.0.5"
+Werkzeug = "^1.0.1"
+
+[tool.poetry.extras]
+geoip = ["pycountry", "geoip2"]
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
