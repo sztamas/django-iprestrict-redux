@@ -1,4 +1,0 @@
-include docs/*
-recursive-include iprestrict/static *
-recursive-include iprestrict/templates *
-prune debian
