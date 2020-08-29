@@ -45,26 +45,34 @@ class IPRestrictMiddleware(MiddlewareMixin):
 
     def extract_client_ip(self, request):
         client_ip = request.META['REMOTE_ADDR']
-        if not self.ignore_proxy_header:
-            forwarded_for = self.get_forwarded_for(request)
-            if forwarded_for:
-                closest_proxy = client_ip
-                client_ip = forwarded_for.pop(0)
-                if self.trust_all_proxies:
-                    return client_ip
-                proxies = [closest_proxy] + forwarded_for
-                for proxy in proxies:
-                    if proxy not in self.trusted_proxies:
-                        logger.warn("Client IP %s forwarded by untrusted proxy %s" % (client_ip, proxy))
-                        raise exceptions.PermissionDenied
+        if self.ignore_proxy_header:
+            return client_ip
+
+        forwarded_for = self.get_forwarded_for(request)
+        if forwarded_for:
+            client_ip = self.extract_client_ip_proxied_request(client_ip, forwarded_for)
+
+        return client_ip
+
+    def extract_client_ip_proxied_request(self, client_ip, forwarded_for):
+        closest_proxy = client_ip
+        client_ip = forwarded_for.pop(0)
+        if self.trust_all_proxies:
+            return client_ip
+
+        proxies = [closest_proxy] + forwarded_for
+        for proxy in proxies:
+            if proxy not in self.trusted_proxies:
+                logger.warn("Client IP %s forwarded by untrusted proxy %s" % (client_ip, proxy))
+                raise exceptions.PermissionDenied
+
         return client_ip
 
     def get_forwarded_for(self, request):
         hdr = request.META.get('HTTP_X_FORWARDED_FOR')
-        if hdr is not None:
-            return [ip.strip() for ip in hdr.split(',')]
-        else:
+        if hdr is None:
             return []
+        return [ip.strip() for ip in hdr.split(',')]
 
     def reload_rules_if_needed(self):
         last_reload_request = ReloadRulesRequest.last_request()
