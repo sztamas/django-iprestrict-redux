@@ -40,7 +40,7 @@ For development create a ``virtualenv``, activate it and then::
 
 To run the tests against the *python* and *Django* in your virtualenv::
 
-    ./runtests.sh
+    pytest
 
 To run the tests against all combinations of *python 2*, *python 3*, and supported *Django* versions::
 

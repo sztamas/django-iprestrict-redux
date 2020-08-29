@@ -34,6 +34,8 @@ flake8 = "^3.8.3"
 Sphinx = "^3.2.1"
 django-extensions = "^3.0.5"
 Werkzeug = "^1.0.1"
+pytest = "^6.0.1"
+pytest-django = "^3.9.0"
 
 [tool.poetry.extras]
 geoip = ["pycountry", "geoip2"]
