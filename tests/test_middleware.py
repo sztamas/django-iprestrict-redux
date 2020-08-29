@@ -1,15 +1,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from django.core import exceptions
 from django.test import TestCase
 from django.test.client import RequestFactory
 from django.test.utils import override_settings
 
-from django.core import exceptions
-
 from iprestrict import models
 from iprestrict.middleware import IPRestrictMiddleware
-
 
 LOCAL_IP = "192.168.1.1"
 PROXY = "1.1.1.1"

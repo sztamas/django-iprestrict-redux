@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.test import TestCase
-from django.core.management.base import CommandError
 from django.core.management import call_command
+from django.core.management.base import CommandError
+from django.test import TestCase
 
-from iprestrict import models
 from iprestrict import ip_utils as ipu
+from iprestrict import models
 
 
 class AddIPToIPGroupTest(TestCase):

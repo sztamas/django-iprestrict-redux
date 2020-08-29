@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.contrib import admin
-from django import forms
 import re
+
+from django import forms
+from django.contrib import admin
+
 from . import ip_utils as ipu
 from . import models
 from .geoip import is_valid_country_code
-
 
 NOT_LETTER = re.compile(r"[^A-Z]+")
 

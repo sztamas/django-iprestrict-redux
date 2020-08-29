@@ -7,7 +7,6 @@ from django.core import exceptions
 from .models import ReloadRulesRequest
 from .restrictor import IPRestrictor
 
-
 logger = logging.getLogger(__name__)
 
 

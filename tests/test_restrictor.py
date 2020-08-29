@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.test import TestCase
 from unittest import mock
+
+from django.test import TestCase
 
 import iprestrict
 from iprestrict import models
-
 
 IP = "10.1.1.1"
 SOME_URL = "/some/url"

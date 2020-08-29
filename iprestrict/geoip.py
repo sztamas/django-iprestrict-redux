@@ -6,8 +6,8 @@ GEOIP.
 """
 from __future__ import unicode_literals
 
-from django.core.exceptions import ImproperlyConfigured
 from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
 
 try:
     from django.contrib.gis.geoip2 import GeoIP2

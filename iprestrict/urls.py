@@ -2,7 +2,6 @@ from django.urls import path
 
 from . import views
 
-
 app_name = "iprestrict"
 urlpatterns = [
     path(r"", views.test_rules_page),

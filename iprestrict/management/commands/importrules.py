@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from ._utils import warn_about_renamed_command
 from . import import_rules
+from ._utils import warn_about_renamed_command
 
 
 class Command(import_rules.Command):

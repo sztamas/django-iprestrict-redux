@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-
 IPv4 = "ipv4"
 IPv6 = "ipv6"
 

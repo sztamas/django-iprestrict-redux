@@ -14,8 +14,7 @@ except ImportError:
     from django.core.urlresolvers import reverse
 
 from . import ip_utils as ipu
-from .geoip import get_geoip, NO_COUNTRY
-
+from .geoip import NO_COUNTRY, get_geoip
 
 TYPE_LOCATION = "location"
 TYPE_RANGE = "range"
