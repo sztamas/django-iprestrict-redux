@@ -1,15 +1,13 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+from django.urls import path
 
-from django.conf.urls import url
-from .views import test_rules_page, test_match, reload_rules
-from .views import move_rule_up, move_rule_down
+from . import views
+
 
 app_name = "iprestrict"
 urlpatterns = [
-    url(r'^$', test_rules_page),
-    url(r'^move_rule_up/(?P<rule_id>\d+)[/]?$', move_rule_up, name='move_rule_up'),
-    url(r'^move_rule_down/(?P<rule_id>\d+)[/]?$', move_rule_down, name='move_rule_down'),
-    url(r'^reload_rules[/]?$', reload_rules, name='reload_rules'),
-    url(r'^test_match[/]?$', test_match, name='test_match'),
+    path(r'', views.test_rules_page),
+    path(r'move_rule_up/<int:rule_id>/', views.move_rule_up, name='move_rule_up'),
+    path(r'move_rule_down/<int:rule_id>/', views.move_rule_down, name='move_rule_down'),
+    path(r'reload_rules/', views.reload_rules, name='reload_rules'),
+    path(r'test_match/', views.test_match, name='test_match'),
 ]

@@ -25,7 +25,7 @@ class ReloadByViewTest(TestCase):
 
     def reload_rules(self):
         self.client.login(username='admin', password='pass')
-        self.client.get('/iprestrict/reload_rules')
+        response = self.client.get('/iprestrict/reload_rules/')
 
     def test_reload_view(self):
         # 1

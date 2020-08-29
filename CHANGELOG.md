@@ -5,6 +5,7 @@ Changelog
   - Switched to Poetry (https://python-poetry.org/) + more cleanup
   - Switched to pytest and pytest-django
   - Drop support for pre-Django 1.10 style MIDDLEWARES
+  - Switch to old style url to path in urls.py
   - More cleanup
 
 ### 1.8.1 Aug 24, 2020
