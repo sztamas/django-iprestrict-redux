@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.test import TestCase
-import mock
+from unittest import mock
 
 import iprestrict
 from iprestrict import models
