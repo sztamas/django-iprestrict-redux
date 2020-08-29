@@ -78,7 +78,6 @@ class IPRangeFormTest(TestCase):
         self.assertIn("cidr_prefix_length", form.errors)
         self.assertIn("Must be a number between", "\n".join(form.errors["cidr_prefix_length"]))
 
-
     def test_ip_types(self):
         form_data = {
             "ip_group": self.all_group.pk,
@@ -124,22 +123,22 @@ class IPLocationFormTest(TestCase):
         self.assert_form_validity('', False, 'country_codes should be mandatory')
 
         form = self.assert_form_validity('AU', msg='AU should be a valid code')
-        self.assertEquals(form.cleaned_data['country_codes'], 'AU')
+        self.assertEqual(form.cleaned_data['country_codes'], 'AU')
 
         form = self.assert_form_validity('au', msg='country codes are case insensitive')
-        self.assertEquals(form.cleaned_data['country_codes'], 'AU')
+        self.assertEqual(form.cleaned_data['country_codes'], 'AU')
 
         form = self.assert_form_validity('$@!  au 23454', msg='invalid characters should be stripped')
-        self.assertEquals(form.cleaned_data['country_codes'], 'AU')
+        self.assertEqual(form.cleaned_data['country_codes'], 'AU')
 
         form = self.assert_form_validity('au, hu', msg='multiple countries should be ok')
-        self.assertEquals(form.cleaned_data['country_codes'], 'AU, HU')
+        self.assertEqual(form.cleaned_data['country_codes'], 'AU, HU')
 
         form = self.assert_form_validity('au123456789- @#$% hu', msg='any separator is ok')
-        self.assertEquals(form.cleaned_data['country_codes'], 'AU, HU')
+        self.assertEqual(form.cleaned_data['country_codes'], 'AU, HU')
 
         form = self.assert_form_validity('hu, au, br', msg='countries should be ordered')
-        self.assertEquals(form.cleaned_data['country_codes'], 'AU, BR, HU')
+        self.assertEqual(form.cleaned_data['country_codes'], 'AU, BR, HU')
 
         self.assert_form_validity('HU, AU, ZZ', False, msg='invalid country codes should NOT be allowed')
         self.assert_form_validity(NO_COUNTRY, msg='allow special country code for IPs wo country')
