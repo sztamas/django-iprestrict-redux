@@ -49,8 +49,8 @@ class IPRestrictorNoRulesTest(TestCase):
         self.assertFalse(self.restrictor.is_restricted(SOME_URL, '192.168.1.1'))
 
     def test_restrictor_considers_rules_by_rank(self):
-        rule = models.Rule.objects.create(url_pattern='ALL', action='A', rank=2)
-        rule = models.Rule.objects.create(url_pattern='/admin[/].*',  action='D', rank=1)
+        _ = models.Rule.objects.create(url_pattern='ALL', action='A', rank=2)
+        _ = models.Rule.objects.create(url_pattern='/admin[/].*',  action='D', rank=1)
         restr = iprestrict.IPRestrictor()
         self.assertFalse(restr.is_restricted('/some/url', IP))
         self.assertTrue(restr.is_restricted('/admin/', IP))

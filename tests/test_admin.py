@@ -90,6 +90,18 @@ class IPRangeFormTest(TestCase):
         self.assertIn("__all__", form.errors)
         self.assertIn("same type", "\n".join(form.errors["__all__"]))
 
+    def test_last_ip_greater_than_first_ip(self):
+        form_data = {
+            "ip_group": self.all_group.pk,
+            "first_ip": "192.168.1.2",
+            "last_ip": "192.168.1.1",
+        }
+        form = admin.IPRangeForm(data=form_data)
+        self.assertFalse(form.is_valid())
+        self.assertTrue(form.errors)
+        self.assertIn("__all__", form.errors)
+        self.assertIn("greater than", "\n".join(form.errors["__all__"]))
+
 
 class IPLocationFormTest(TestCase):
     def setUp(self):
