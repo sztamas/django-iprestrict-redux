@@ -20,6 +20,7 @@ class IPRestrictor(object):
     def load_rules(self):
         # We are caching the rules, to avoid DB lookup on each request
         from .models import Rule
+
         self.rules = list(Rule.objects.all())
         self.last_reload = timezone.now()
 

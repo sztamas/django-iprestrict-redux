@@ -8,18 +8,20 @@ from ... import models
 
 
 class Command(BaseCommand):
-    help = 'Adds an IP address to an IP Group.'
+    help = "Adds an IP address to an IP Group."
 
     def add_arguments(self, parser):
-        parser.add_argument('group_name')
-        parser.add_argument('ip', nargs='+')
+        parser.add_argument("group_name")
+        parser.add_argument("ip", nargs="+")
 
     def handle(self, *args, **options):
-        group_name = options.get('group_name')
-        ips = options.get('ip')
+        group_name = options.get("group_name")
+        ips = options.get("ip")
 
         try:
-            ip_group = models.IPGroup.objects.get(name__iexact=group_name, type=models.TYPE_RANGE)
+            ip_group = models.IPGroup.objects.get(
+                name__iexact=group_name, type=models.TYPE_RANGE
+            )
         except models.IPGroup.DoesNotExist:
             try:
                 models.IPGroup.objects.get(name__iexact=group_name)

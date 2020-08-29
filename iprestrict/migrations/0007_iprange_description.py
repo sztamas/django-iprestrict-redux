@@ -8,13 +8,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('iprestrict', '0006_auto_20161013_1327'),
+        ("iprestrict", "0006_auto_20161013_1327"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='iprange',
-            name='description',
+            model_name="iprange",
+            name="description",
             field=models.CharField(blank=True, max_length=500),
         ),
     ]

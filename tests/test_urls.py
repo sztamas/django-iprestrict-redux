@@ -7,8 +7,8 @@ from django.urls import include, path
 
 
 urlpatterns = [
-    path('iprestrict/', include('iprestrict.urls')),
-    path('admin/', admin.site.urls),
+    path("iprestrict/", include("iprestrict.urls")),
+    path("admin/", admin.site.urls),
 ]
 
 urlpatterns += staticfiles_urlpatterns()

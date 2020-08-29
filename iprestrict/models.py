@@ -17,8 +17,8 @@ from . import ip_utils as ipu
 from .geoip import get_geoip, NO_COUNTRY
 
 
-TYPE_LOCATION = 'location'
-TYPE_RANGE = 'range'
+TYPE_LOCATION = "location"
+TYPE_RANGE = "range"
 
 
 geoip = get_geoip()
@@ -33,8 +33,7 @@ class IPGroupManager(models.Manager):
 
 
 class IPGroup(models.Model):
-    TYPE_CHOICES = ((TYPE_LOCATION, 'Location based'),
-                    (TYPE_RANGE, 'Range based'))
+    TYPE_CHOICES = ((TYPE_LOCATION, "Location based"), (TYPE_RANGE, "Range based"))
     TYPE = None
 
     name = models.CharField(max_length=100)
@@ -42,7 +41,7 @@ class IPGroup(models.Model):
     type = models.CharField(max_length=10, default=TYPE_RANGE, choices=TYPE_CHOICES)
 
     class Meta:
-        verbose_name = 'IP Group'
+        verbose_name = "IP Group"
 
     objects = IPGroupManager()
 
@@ -81,7 +80,7 @@ class RangeBasedIPGroup(IPGroup):
 
     class Meta:
         proxy = True
-        verbose_name = 'IP Group'
+        verbose_name = "IP Group"
 
     def load_ranges(self):
         self._ranges = {ipu.IPv4: [], ipu.IPv6: []}
@@ -103,7 +102,7 @@ class RangeBasedIPGroup(IPGroup):
         return False
 
     def details_str(self):
-        return ', '.join([str(r) for r in self.ranges()])
+        return ", ".join([str(r) for r in self.ranges()])
 
 
 class LocationBasedIPGroup(IPGroup):
@@ -111,12 +110,14 @@ class LocationBasedIPGroup(IPGroup):
 
     class Meta:
         proxy = True
-        verbose_name = 'Location Based IP Group'
+        verbose_name = "Location Based IP Group"
 
     def load_locations(self):
-        countries = ", ".join(self.iplocation_set.values_list('country_codes', flat=True)).split(', ')
+        countries = ", ".join(
+            self.iplocation_set.values_list("country_codes", flat=True)
+        ).split(", ")
         countries.sort()
-        self._countries = ', '.join(countries)
+        self._countries = ", ".join(countries)
 
     load = load_locations
 
@@ -141,8 +142,7 @@ class IPRange(models.Model):
     @property
     def start(self):
         if self.cidr_prefix_length is not None:
-            start, end = ipu.cidr_to_range(self.first_ip,
-                                           self.cidr_prefix_length)
+            start, end = ipu.cidr_to_range(self.first_ip, self.cidr_prefix_length)
             return start
         else:
             return ipu.to_number(self.first_ip)
@@ -152,15 +152,14 @@ class IPRange(models.Model):
         if self.last_ip is not None:
             return ipu.to_number(self.last_ip)
         if self.cidr_prefix_length is not None:
-            start, end = ipu.cidr_to_range(self.first_ip,
-                                           self.cidr_prefix_length)
+            start, end = ipu.cidr_to_range(self.first_ip, self.cidr_prefix_length)
             return end
         return self.start
 
     @property
     def ip_type(self):
         if not self.first_ip:
-            return ''
+            return ""
         return ipu.get_version(self.first_ip)
 
     def __contains__(self, ip):
@@ -170,9 +169,9 @@ class IPRange(models.Model):
     def __str__(self):
         result = str(self.first_ip)
         if self.cidr_prefix_length is not None:
-            result += '/' + str(self.cidr_prefix_length)
+            result += "/" + str(self.cidr_prefix_length)
         elif self.last_ip is not None:
-            result += '-' + str(self.last_ip)
+            result += "-" + str(self.last_ip)
         return result
 
     __unicode__ = __str__
@@ -183,10 +182,12 @@ class IPLocation(models.Model):
         verbose_name = "IP Location"
 
     ip_group = models.ForeignKey(IPGroup, on_delete=models.CASCADE)
-    country_codes = models.CharField(max_length=2000, help_text='Comma-separated list of 2 character country codes')
+    country_codes = models.CharField(
+        max_length=2000, help_text="Comma-separated list of 2 character country codes"
+    )
 
     def __contains__(self, country_code):
-        return country_code in re.split(r'[^A-Z]+', self.country_codes)
+        return country_code in re.split(r"[^A-Z]+", self.country_codes)
 
     def __str__(self):
         return self.country_codes
@@ -196,17 +197,14 @@ class IPLocation(models.Model):
 
 class Rule(models.Model):
     class Meta:
-        ordering = ['rank', 'id']
+        ordering = ["rank", "id"]
 
-    ACTION_CHOICES = (
-        ('A', 'ALLOW'),
-        ('D', 'DENY')
-    )
+    ACTION_CHOICES = (("A", "ALLOW"), ("D", "DENY"))
 
     url_pattern = models.CharField(max_length=500)
     ip_group = models.ForeignKey(IPGroup, default=1, on_delete=models.CASCADE)
     reverse_ip_group = models.BooleanField(default=False)
-    action = models.CharField(max_length=1, choices=ACTION_CHOICES, default='D')
+    action = models.CharField(max_length=1, choices=ACTION_CHOICES, default="D")
     rank = models.IntegerField(blank=True)
 
     def __init__(self, *args, **kwargs):
@@ -215,12 +213,12 @@ class Rule(models.Model):
 
     @property
     def regex(self):
-        if not hasattr(self, '_regex'):
+        if not hasattr(self, "_regex"):
             self._regex = re.compile(self.url_pattern)
         return self._regex
 
     def matches_url(self, url):
-        if self.url_pattern == 'ALL':
+        if self.url_pattern == "ALL":
             return True
         else:
             return self.regex.match(url) is not None
@@ -232,15 +230,16 @@ class Rule(models.Model):
         return match
 
     def is_restricted(self):
-        return self.action != 'A'
+        return self.action != "A"
 
     def is_allowed(self):
-        return self.action == 'A'
+        return self.action == "A"
+
     is_allowed.boolean = True
-    is_allowed.short_description = 'Is allowed?'
+    is_allowed.short_description = "Is allowed?"
 
     def action_str(self):
-        return 'Allowed' if self.is_allowed() else 'Denied'
+        return "Allowed" if self.is_allowed() else "Denied"
 
     def swap_with_rule(self, other):
         other.rank, self.rank = self.rank, other.rank
@@ -248,20 +247,22 @@ class Rule(models.Model):
         self.save()
 
     def move_up(self):
-        rules_above = Rule.objects.filter(rank__lt=self.rank).order_by('-rank')
+        rules_above = Rule.objects.filter(rank__lt=self.rank).order_by("-rank")
         if len(rules_above) == 0:
             return
         self.swap_with_rule(rules_above[0])
 
     def move_up_url(self):
-        url = reverse('iprestrict:move_rule_up', args=[self.pk])
+        url = reverse("iprestrict:move_rule_up", args=[self.pk])
         return mark_safe('<a href="%s">Move Up</a>' % url)
-    move_up_url.short_description = 'Move Up'
+
+    move_up_url.short_description = "Move Up"
 
     def move_down_url(self):
-        url = reverse('iprestrict:move_rule_down', args=[self.pk])
+        url = reverse("iprestrict:move_rule_down", args=[self.pk])
         return mark_safe('<a href="%s">Move Down</a>' % url)
-    move_down_url.short_description = 'Move Down'
+
+    move_down_url.short_description = "Move Down"
 
     def move_down(self):
         rules_below = Rule.objects.filter(rank__gt=self.rank)
@@ -271,8 +272,8 @@ class Rule(models.Model):
 
     def save(self, *args, **kwargs):
         if self.rank is None:
-            max_aggr = Rule.objects.filter(rank__lt=65000).aggregate(models.Max('rank'))
-            max_rank = max_aggr.get('rank__max')
+            max_aggr = Rule.objects.filter(rank__lt=65000).aggregate(models.Max("rank"))
+            max_rank = max_aggr.get("rank__max")
             if max_rank is None:
                 max_rank = 0
             self.rank = max_rank + 1

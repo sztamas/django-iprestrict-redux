@@ -6,7 +6,6 @@ from . import import_rules
 
 
 class Command(import_rules.Command):
-
     def handle(self, *args, **options):
-        warn_about_renamed_command('importrules', 'import_rules')
+        warn_about_renamed_command("importrules", "import_rules")
         super(Command, self).handle(*args, **options)
