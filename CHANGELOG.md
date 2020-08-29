@@ -6,6 +6,8 @@ Changelog
   - Switched to pytest and pytest-django
   - Drop support for pre-Django 1.10 style MIDDLEWARES
   - Switch to old style url to path in urls.py
+  - Added Black and re-formatted and linted all the code
+  - Added isort and sorted all imports
   - More cleanup
 
 ### 1.8.1 Aug 24, 2020
