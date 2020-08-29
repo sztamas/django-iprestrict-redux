@@ -140,9 +140,9 @@ Go to *YOUR_URL/iprestrict/* page. You can use the page to enter any *URL* and *
 Enabling the middleware
 -----------------------
 
-Add ``iprestrict.middleware.IPRestrictMiddleware`` to your ``MIDDLEWARE`` in your settings file (or ``MIDDLEWARE_CLASSES`` for old versions of Django). Generally, you will want this middleware to run early, before your session, auth etc. middlewares (the ``superuser_required`` decorator may also not function correctly if placed out of order)::
+Add ``iprestrict.middleware.IPRestrictMiddleware`` to your ``MIDDLEWARE`` in your settings file. Generally, you will want this middleware to run early, before your session, auth etc. middlewares (the ``superuser_required`` decorator may also not function correctly if placed out of order)::
 
-  MIDDLEWARE_CLASSES = (
+  MIDDLEWARE = (
       'django.middleware.common.CommonMiddleware',
       'iprestrict.middleware.IPRestrictMiddleware',
       ...

@@ -1,38 +1,28 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
-from django.core import exceptions
-from django.conf import settings
 import logging
 import warnings
+
+from django.conf import settings
+from django.core import exceptions
+
 from .models import ReloadRulesRequest
 from .restrictor import IPRestrictor
-try:
-    from django.utils.deprecation import MiddlewareMixin
-except ImportError:
-    class MiddlewareMixin(object):
-        def __init__(self, *args, **kwargs):
-            pass
 
 
 logger = logging.getLogger(__name__)
 
 
-class IPRestrictMiddleware(MiddlewareMixin):
-    restrictor = None
-    trusted_proxies = None
-    allow_proxies = None
-    reload_rules = None
+class IPRestrictMiddleware:
 
-    def __init__(self, *args, **kwargs):
-        super(IPRestrictMiddleware, self).__init__(*args, **kwargs)
+    def __init__(self, get_response):
+        self.get_response = get_response
+
         self.restrictor = IPRestrictor()
         self.trusted_proxies = tuple(get_setting('IPRESTRICT_TRUSTED_PROXIES', 'TRUSTED_PROXIES', []))
         self.reload_rules = get_reload_rules_setting()
         self.ignore_proxy_header = bool(get_setting('IPRESTRICT_IGNORE_PROXY_HEADER', 'IGNORE_PROXY_HEADER', False))
         self.trust_all_proxies = bool(get_setting('IPRESTRICT_TRUST_ALL_PROXIES', 'TRUST_ALL_PROXIES', False))
 
-    def process_request(self, request):
+    def __call__(self, request):
         if self.reload_rules:
             self.reload_rules_if_needed()
 
@@ -40,8 +30,11 @@ class IPRestrictMiddleware(MiddlewareMixin):
         client_ip = self.extract_client_ip(request)
 
         if self.restrictor.is_restricted(url, client_ip):
-            logger.warn("Denying access of %s to %s" % (url, client_ip))
+            logger.warning("Denying access of %s to %s" % (url, client_ip))
             raise exceptions.PermissionDenied
+
+        response = self.get_response(request)
+        return response
 
     def extract_client_ip(self, request):
         client_ip = request.META['REMOTE_ADDR']
@@ -63,7 +56,7 @@ class IPRestrictMiddleware(MiddlewareMixin):
         proxies = [closest_proxy] + forwarded_for
         for proxy in proxies:
             if proxy not in self.trusted_proxies:
-                logger.warn("Client IP %s forwarded by untrusted proxy %s" % (client_ip, proxy))
+                logger.warning("Client IP %s forwarded by untrusted proxy %s" % (client_ip, proxy))
                 raise exceptions.PermissionDenied
 
         return client_ip
