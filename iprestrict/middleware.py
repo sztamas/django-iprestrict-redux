@@ -10,6 +10,9 @@ from .restrictor import IPRestrictor
 logger = logging.getLogger(__name__)
 
 
+UNKNOWN = "unknown"
+
+
 class IPRestrictMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
@@ -24,6 +27,9 @@ class IPRestrictMiddleware:
         )
         self.trust_all_proxies = bool(
             get_setting("IPRESTRICT_TRUST_ALL_PROXIES", "TRUST_ALL_PROXIES", False)
+        )
+        self.use_proxy_if_unknown = bool(
+            getattr(settings, "IPRESTRICT_USE_PROXY_IF_UNKNOWN", False)
         )
 
     def __call__(self, request):
@@ -54,6 +60,13 @@ class IPRestrictMiddleware:
     def extract_client_ip_proxied_request(self, client_ip, forwarded_for):
         closest_proxy = client_ip
         client_ip = forwarded_for.pop(0)
+
+        if client_ip == UNKNOWN:
+            if self.use_proxy_if_unknown:
+                client_ip = closest_proxy
+            else:
+                raise exceptions.PermissionDenied
+
         if self.trust_all_proxies:
             return client_ip
 

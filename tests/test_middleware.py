@@ -69,13 +69,38 @@ class MiddlewareAllowsTest(TestCase):
         response = self.client.get("", REMOTE_ADDR="10.1.1.1")
         self.assertEqual(response.status_code, 403)
 
-    @override_settings(IPRESTRICT_TRUSTED_PROXIES=(PROXY,), ALLOW_PROXIES=False)
+    @override_settings(IPRESTRICT_TRUSTED_PROXIES=(PROXY,))
     def test_middleware_allows_if_proxy_is_trusted(self):
         response = self.client.get("", REMOTE_ADDR=PROXY, HTTP_X_FORWARDED_FOR=LOCAL_IP)
         self.assertEqual(response.status_code, 404)
 
     def test_middleware_restricts_if_proxy_is_not_trusted(self):
         response = self.client.get("", REMOTE_ADDR=PROXY, HTTP_X_FORWARDED_FOR=LOCAL_IP)
+        self.assertEqual(response.status_code, 403)
+
+    @override_settings(
+        IPRESTRICT_TRUSTED_PROXIES=(LOCAL_IP,), IPRESTRICT_USE_PROXY_IF_UNKNOWN=True
+    )
+    def test_middleware_allows_if_PROXY_is_used_and_allowed_when_IP_is_unknown(self):
+        response = self.client.get(
+            "", REMOTE_ADDR=LOCAL_IP, HTTP_X_FORWARDED_FOR="unknown"
+        )
+        self.assertEqual(response.status_code, 404)
+
+    @override_settings(IPRESTRICT_USE_PROXY_IF_UNKNOWN=True)
+    def test_middleware_restricts_if_PROXY_is_used_but_NOT_allowed_when_IP_is_unknown(
+        self,
+    ):
+        response = self.client.get(
+            "", REMOTE_ADDR=LOCAL_IP, HTTP_X_FORWARDED_FOR="unknown"
+        )
+        self.assertEqual(response.status_code, 403)
+
+    @override_settings(IPRESTRICT_TRUSTED_PROXIES=(PROXY,))
+    def test_middleware_restricts_if_IP_is_unknown(self):
+        response = self.client.get(
+            "", REMOTE_ADDR=PROXY, HTTP_X_FORWARDED_FOR="unknown"
+        )
         self.assertEqual(response.status_code, 403)
 
 
@@ -149,9 +174,7 @@ class MiddlewareExtractClientIpTest(TestCase):
         client_ip = self.middleware.extract_client_ip(request)
         self.assertEqual(client_ip, LOCAL_IP)
 
-    @override_settings(
-        IPRESTRICT_TRUSTED_PROXIES=(PROXY,), IPRESTRICT_TRUST_ALL_PROXIES=True
-    )
+    @override_settings(IPRESTRICT_TRUST_ALL_PROXIES=True)
     def test_trust_all_proxies_on(self):
         self.middleware = IPRestrictMiddleware(dummy_get_response)
         proxies = ["1.1.1.1", "2.2.2.2", "3.3.3.3", "4.4.4.4"]
@@ -161,3 +184,16 @@ class MiddlewareExtractClientIpTest(TestCase):
 
         client_ip = self.middleware.extract_client_ip(request)
         self.assertEqual(client_ip, LOCAL_IP)
+
+    @override_settings(
+        IPRESTRICT_TRUST_ALL_PROXIES=True, IPRESTRICT_USE_PROXY_IF_UNKNOWN=True
+    )
+    def test_use_proxy_if_unknown(self):
+        self.middleware = IPRestrictMiddleware(dummy_get_response)
+        proxies = ["1.1.1.1", "2.2.2.2", "3.3.3.3", "4.4.4.4"]
+        request = self.factory.get(
+            "", REMOTE_ADDR=PROXY, HTTP_X_FORWARDED_FOR=", ".join(["unknown"] + proxies)
+        )
+
+        client_ip = self.middleware.extract_client_ip(request)
+        self.assertEqual(client_ip, PROXY)
