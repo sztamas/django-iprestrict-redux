@@ -205,3 +205,21 @@ Use this setting when using a managed proxy with a dynamic IP (like when
 behind an AWS Load Balancer, or other cloud equivalent). When this
 setting is ``True``, Django IP Restrict will always check the HTTP
 ``X-Forwarded-For`` header to determine the true client IP address.
+
+
+IPRESTRICT_USE_PROXY_IF_UNKNOWN
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Default: ``False``
+
+Some proxies can be configured to hide the client IP behind them by using
+the special value ``unknown`` in the ``X-Forwarded-For`` header.
+By default, these requests will be blocked.
+
+Set this setting to ``True`` if you would like to use the proxy's IP address
+instead when the proxy reports them as ``unknown``.
+This will allow you to set up rules against the IP address of the proxy instead
+of the client IP addresses it hides.
+
+Please note that in this special case the proxy is also checked against
+``IPRESTRICT_TRUSTED_PROXIES`` if you are using that setting.
