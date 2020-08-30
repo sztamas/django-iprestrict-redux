@@ -207,8 +207,12 @@ class Rule(models.Model):
     rank = models.IntegerField(blank=True)
 
     def __init__(self, *args, **kwargs):
-        super(Rule, self).__init__(*args, **kwargs)
-        self.ip_group = typed_ip_group(self.ip_group)
+        super().__init__(*args, **kwargs)
+        # TODO review this code, it fails without the try except when using Add rule in admin
+        try:
+            self.ip_group = typed_ip_group(self.ip_group)
+        except IPGroup.DoesNotExist:
+            pass
 
     @property
     def regex(self):
