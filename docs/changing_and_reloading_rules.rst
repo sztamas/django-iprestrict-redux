@@ -21,13 +21,15 @@ The second possibility (which is the default behaviour) is to request a rule rel
 The advantage of this approach is that you don't have to restart your server every time you change your rules.
 The disadvantage is that on each request a query will be executed that selects the first row from the ``reloadrulesrequest`` DB table.
 
+As a more convenient alternative you can also visit the https://YOUR_DOMAIN/PATH_BEFORE_IPRESTRICT/iprestrict/reload_rules URL as a Django superuser to reload the rules.
+
 
 Changing the rules on a production server
 -----------------------------------------
 
 In case you are using the default caching described above, remember that every time you change your rules you will have to follow up with running the ``reload_rules`` command.
 
-However, the recommended way of changing your restriction rules is to make the changes using admin on a staging server and test them there, export them and then import them on the production server instead of changing rules directly on the production server. 
+However, the recommended way of changing your restriction rules is to make the changes using admin on a staging server and test them there, export them and then import them on the production server instead of changing rules directly on the production server.
 
 After you changed the rules and are happy with them you can export them using::
 
@@ -40,4 +42,6 @@ Then you can copy the new_rules.json file to your production server and import t
 You would also have to reload the rules or restart the server (depending on what caching strategy you are using)::
 
   $ ./manage.py reload_rules
+
+Or again, as an alternative just visit the ``iprestrict/reload_rules`` URL as mentioned above.
 

@@ -40,8 +40,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'Django IPRestrict'
-copyright = u'2012-2018, CCG - Murdoch University'
+project = u'Django IPRestrict Redux'
+copyright = u'2012-2020, CCG - Murdoch University, Tamas Szabo'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -185,7 +185,7 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'DjangoIPRestrict.tex', u'Django IPRestrict Documentation',
+  ('index', 'DjangoIPRestrictRedux.tex', u'Django IPRestrict Redux Documentation',
    u'Tamas Szabo', 'manual'),
 ]
 
@@ -215,7 +215,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'djangoiprestrict', u'Django IPRestrict Documentation',
+    ('index', 'djangoiprestrictredux', u'Django IPRestrict Redux Documentation',
      [u'Tamas Szabo'], 1)
 ]
 
@@ -229,8 +229,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'DjangoIPRestrict', u'Django IPRestrict Documentation',
-   u'Tamas Szabo', 'DjangoIPRestrict', 'One line description of project.',
+  ('index', 'DjangoIPRestrictRedux', u'Django IPRestrict Redux Documentation',
+   u'Tamas Szabo', 'DjangoIPRestrictRedux', 'One line description of project.',
    'Miscellaneous'),
 ]
 
