@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'iprestrict',
+    'django_extensions',
     'polls.apps.PollsConfig',
     'django.contrib.admin',
     'django.contrib.auth',

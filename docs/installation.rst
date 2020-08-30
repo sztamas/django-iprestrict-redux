@@ -30,15 +30,20 @@ The country based lookups are optional, if you need it you can install them with
 Development
 ^^^^^^^^^^^
 
-For development create a ``virtualenv``, activate it and then::
+For development you will need Poetry_.
 
-    pip install -e .[geoip,dev]
+.. _Poetry https://python-poetry.org
+
+
+Fork the project and then:
+
+    poetry install
 
 To run the tests against the *python* and *Django* in your virtualenv::
 
-    ./runtests.sh
+    pytest
 
-To run the tests against all combinations of *python 2*, *python 3*, and supported *Django* versions::
+To run the tests against all combinations of supported *Python 3*, and *Django* versions::
 
     tox
 

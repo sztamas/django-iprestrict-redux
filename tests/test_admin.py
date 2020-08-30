@@ -9,7 +9,7 @@ from iprestrict.geoip import NO_COUNTRY
 
 class IPRangeFormTest(TestCase):
     def setUp(self):
-        self.all_group = models.IPGroup.objects.get(name='ALL')
+        self.all_group = models.IPGroup.objects.get(name="ALL")
 
     def test_empty(self):
         form_data = {}
@@ -56,7 +56,9 @@ class IPRangeFormTest(TestCase):
         form = admin.IPRangeForm(data=form_data)
         self.assertFalse(form.is_valid())
         self.assertIn("cidr_prefix_length", form.errors)
-        self.assertIn("Must be a number between", "\n".join(form.errors["cidr_prefix_length"]))
+        self.assertIn(
+            "Must be a number between", "\n".join(form.errors["cidr_prefix_length"])
+        )
 
     def test_cidr_prefix_length_for_ipv6(self):
         form_data = {
@@ -76,8 +78,9 @@ class IPRangeFormTest(TestCase):
         form = admin.IPRangeForm(data=form_data)
         self.assertFalse(form.is_valid())
         self.assertIn("cidr_prefix_length", form.errors)
-        self.assertIn("Must be a number between", "\n".join(form.errors["cidr_prefix_length"]))
-
+        self.assertIn(
+            "Must be a number between", "\n".join(form.errors["cidr_prefix_length"])
+        )
 
     def test_ip_types(self):
         form_data = {
@@ -91,10 +94,24 @@ class IPRangeFormTest(TestCase):
         self.assertIn("__all__", form.errors)
         self.assertIn("same type", "\n".join(form.errors["__all__"]))
 
+    def test_last_ip_greater_than_first_ip(self):
+        form_data = {
+            "ip_group": self.all_group.pk,
+            "first_ip": "192.168.1.2",
+            "last_ip": "192.168.1.1",
+        }
+        form = admin.IPRangeForm(data=form_data)
+        self.assertFalse(form.is_valid())
+        self.assertTrue(form.errors)
+        self.assertIn("__all__", form.errors)
+        self.assertIn("greater than", "\n".join(form.errors["__all__"]))
+
 
 class IPLocationFormTest(TestCase):
     def setUp(self):
-        self.group = models.LocationBasedIPGroup.objects.create(name='Test Location Group')
+        self.group = models.LocationBasedIPGroup.objects.create(
+            name="Test Location Group"
+        )
 
     def tearDown(self):
         self.group.delete()
@@ -105,7 +122,7 @@ class IPLocationFormTest(TestCase):
             "country_codes": codes,
         }
 
-    def assert_form_validity(self, codes, should_be_valid=True, msg=''):
+    def assert_form_validity(self, codes, should_be_valid=True, msg=""):
         form_data = self.with_country_codes(codes)
         form = admin.IPLocationForm(data=form_data)
 
@@ -121,25 +138,37 @@ class IPLocationFormTest(TestCase):
         self.assertFalse(form.is_valid())
 
     def test_country_codes_validation(self):
-        self.assert_form_validity('', False, 'country_codes should be mandatory')
+        self.assert_form_validity("", False, "country_codes should be mandatory")
 
-        form = self.assert_form_validity('AU', msg='AU should be a valid code')
-        self.assertEquals(form.cleaned_data['country_codes'], 'AU')
+        form = self.assert_form_validity("AU", msg="AU should be a valid code")
+        self.assertEqual(form.cleaned_data["country_codes"], "AU")
 
-        form = self.assert_form_validity('au', msg='country codes are case insensitive')
-        self.assertEquals(form.cleaned_data['country_codes'], 'AU')
+        form = self.assert_form_validity("au", msg="country codes are case insensitive")
+        self.assertEqual(form.cleaned_data["country_codes"], "AU")
 
-        form = self.assert_form_validity('$@!  au 23454', msg='invalid characters should be stripped')
-        self.assertEquals(form.cleaned_data['country_codes'], 'AU')
+        form = self.assert_form_validity(
+            "$@!  au 23454", msg="invalid characters should be stripped"
+        )
+        self.assertEqual(form.cleaned_data["country_codes"], "AU")
 
-        form = self.assert_form_validity('au, hu', msg='multiple countries should be ok')
-        self.assertEquals(form.cleaned_data['country_codes'], 'AU, HU')
+        form = self.assert_form_validity(
+            "au, hu", msg="multiple countries should be ok"
+        )
+        self.assertEqual(form.cleaned_data["country_codes"], "AU, HU")
 
-        form = self.assert_form_validity('au123456789- @#$% hu', msg='any separator is ok')
-        self.assertEquals(form.cleaned_data['country_codes'], 'AU, HU')
+        form = self.assert_form_validity(
+            "au123456789- @#$% hu", msg="any separator is ok"
+        )
+        self.assertEqual(form.cleaned_data["country_codes"], "AU, HU")
 
-        form = self.assert_form_validity('hu, au, br', msg='countries should be ordered')
-        self.assertEquals(form.cleaned_data['country_codes'], 'AU, BR, HU')
+        form = self.assert_form_validity(
+            "hu, au, br", msg="countries should be ordered"
+        )
+        self.assertEqual(form.cleaned_data["country_codes"], "AU, BR, HU")
 
-        self.assert_form_validity('HU, AU, ZZ', False, msg='invalid country codes should NOT be allowed')
-        self.assert_form_validity(NO_COUNTRY, msg='allow special country code for IPs wo country')
+        self.assert_form_validity(
+            "HU, AU, ZZ", False, msg="invalid country codes should NOT be allowed"
+        )
+        self.assert_form_validity(
+            NO_COUNTRY, msg="allow special country code for IPs wo country"
+        )

@@ -8,23 +8,32 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('iprestrict', '0005_add_reverse_ipgroup'),
+        ("iprestrict", "0005_add_reverse_ipgroup"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='ipgroup',
-            name='type',
-            field=models.CharField(choices=[('location', 'Location based'), ('range', 'Range based')], default='range', max_length=10),
+            model_name="ipgroup",
+            name="type",
+            field=models.CharField(
+                choices=[("location", "Location based"), ("range", "Range based")],
+                default="range",
+                max_length=10,
+            ),
         ),
         migrations.AlterField(
-            model_name='iplocation',
-            name='country_codes',
-            field=models.CharField(help_text='Comma-separated list of 2 character country codes', max_length=2000),
+            model_name="iplocation",
+            name="country_codes",
+            field=models.CharField(
+                help_text="Comma-separated list of 2 character country codes",
+                max_length=2000,
+            ),
         ),
         migrations.AlterField(
-            model_name='rule',
-            name='action',
-            field=models.CharField(choices=[('A', 'ALLOW'), ('D', 'DENY')], default='D', max_length=1),
+            model_name="rule",
+            name="action",
+            field=models.CharField(
+                choices=[("A", "ALLOW"), ("D", "DENY")], default="D", max_length=1
+            ),
         ),
     ]

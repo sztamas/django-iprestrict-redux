@@ -6,52 +6,103 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='IPGroup',
+            name="IPGroup",
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('name', models.CharField(max_length=100)),
-                ('description', models.TextField(null=True, blank=True)),
+                (
+                    "id",
+                    models.AutoField(
+                        verbose_name="ID",
+                        serialize=False,
+                        auto_created=True,
+                        primary_key=True,
+                    ),
+                ),
+                ("name", models.CharField(max_length=100)),
+                ("description", models.TextField(null=True, blank=True)),
             ],
             options={
-                'verbose_name': 'IP Group',
+                "verbose_name": "IP Group",
             },
         ),
         migrations.CreateModel(
-            name='IPRange',
+            name="IPRange",
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('first_ip', models.GenericIPAddressField()),
-                ('cidr_prefix_length', models.PositiveSmallIntegerField(null=True, blank=True)),
-                ('last_ip', models.GenericIPAddressField(null=True, blank=True)),
-                ('ip_group', models.ForeignKey(to='iprestrict.IPGroup', on_delete=models.CASCADE)),
+                (
+                    "id",
+                    models.AutoField(
+                        verbose_name="ID",
+                        serialize=False,
+                        auto_created=True,
+                        primary_key=True,
+                    ),
+                ),
+                ("first_ip", models.GenericIPAddressField()),
+                (
+                    "cidr_prefix_length",
+                    models.PositiveSmallIntegerField(null=True, blank=True),
+                ),
+                ("last_ip", models.GenericIPAddressField(null=True, blank=True)),
+                (
+                    "ip_group",
+                    models.ForeignKey(
+                        to="iprestrict.IPGroup", on_delete=models.CASCADE
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'IP Range',
+                "verbose_name": "IP Range",
             },
         ),
         migrations.CreateModel(
-            name='ReloadRulesRequest',
+            name="ReloadRulesRequest",
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('at', models.DateTimeField(auto_now_add=True)),
+                (
+                    "id",
+                    models.AutoField(
+                        verbose_name="ID",
+                        serialize=False,
+                        auto_created=True,
+                        primary_key=True,
+                    ),
+                ),
+                ("at", models.DateTimeField(auto_now_add=True)),
             ],
         ),
         migrations.CreateModel(
-            name='Rule',
+            name="Rule",
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('url_pattern', models.CharField(max_length=500)),
-                ('action', models.CharField(default='D', max_length=1, choices=[('A', 'ALLOW'), ('D', 'DENY')])),
-                ('rank', models.IntegerField(blank=True)),
-                ('ip_group', models.ForeignKey(default=1, to='iprestrict.IPGroup', on_delete=models.CASCADE)),
+                (
+                    "id",
+                    models.AutoField(
+                        verbose_name="ID",
+                        serialize=False,
+                        auto_created=True,
+                        primary_key=True,
+                    ),
+                ),
+                ("url_pattern", models.CharField(max_length=500)),
+                (
+                    "action",
+                    models.CharField(
+                        default="D",
+                        max_length=1,
+                        choices=[("A", "ALLOW"), ("D", "DENY")],
+                    ),
+                ),
+                ("rank", models.IntegerField(blank=True)),
+                (
+                    "ip_group",
+                    models.ForeignKey(
+                        default=1, to="iprestrict.IPGroup", on_delete=models.CASCADE
+                    ),
+                ),
             ],
             options={
-                'ordering': ['rank', 'id'],
+                "ordering": ["rank", "id"],
             },
         ),
     ]

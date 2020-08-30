@@ -19,11 +19,11 @@ Enable Django Admin for at least the iprestrict application.
 
 Add the urls of iprestrict to your project. Ex in your root urls.py::
 
-  from django.conf.urls import url, include
+  from django.urls import include, path
 
   urlpatterns = [
       # ... snip ...
-      url(r'^iprestrict/', include('iprestrict.urls', namespace='iprestrict')),
+      path('iprestrict/', include('iprestrict.urls', namespace='iprestrict')),
 
 This configuration will allow you to configure and test your restriction rules.
 
@@ -140,9 +140,9 @@ Go to *YOUR_URL/iprestrict/* page. You can use the page to enter any *URL* and *
 Enabling the middleware
 -----------------------
 
-Add ``iprestrict.middleware.IPRestrictMiddleware`` to your ``MIDDLEWARE`` in your settings file (or ``MIDDLEWARE_CLASSES`` for old versions of Django). Generally, you will want this middleware to run early, before your session, auth etc. middlewares (the ``superuser_required`` decorator may also not function correctly if placed out of order)::
+Add ``iprestrict.middleware.IPRestrictMiddleware`` to your ``MIDDLEWARE`` in your settings file. Generally, you will want this middleware to run early, before your session, auth etc. middlewares (the ``superuser_required`` decorator may also not function correctly if placed out of order)::
 
-  MIDDLEWARE_CLASSES = (
+  MIDDLEWARE = (
       'django.middleware.common.CommonMiddleware',
       'iprestrict.middleware.IPRestrictMiddleware',
       ...
