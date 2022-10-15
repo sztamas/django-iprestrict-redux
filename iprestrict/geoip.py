@@ -4,9 +4,9 @@
 By using this we make the geoip module optional. ie. don't fail if the user opts out of using
 GEOIP.
 """
+from django.conf import settings
 from __future__ import unicode_literals
 
-from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 
 try:
