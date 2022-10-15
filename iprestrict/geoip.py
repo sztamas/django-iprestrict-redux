@@ -40,7 +40,7 @@ class AdaptedGeoIP2(object):
     def __init__(self, *args, **kwargs):
         self._geoip = GeoIP2()
 
-    def country_code(   self, ip):
+    def country_code(self, ip):
         # if the IP isn't in the DB return None instead of throwing an Exception as GeoIP does
         try:
             return self._geoip.country_code(ip)
