@@ -1,17 +1,9 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 import re
 
 from django.db import models
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.safestring import mark_safe
-
-try:
-    from django.urls import reverse
-except ImportError:
-    # Pre Django 2.x
-    from django.core.urlresolvers import reverse
 
 from . import ip_utils as ipu
 from .geoip import NO_COUNTRY, get_geoip
@@ -45,8 +37,9 @@ class IPGroup(models.Model):
     objects = IPGroupManager()
 
     def __init__(self, *args, **kwargs):
-        super(IPGroup, self).__init__(*args, **kwargs)
-        self.load()
+        super().__init__(*args, **kwargs)
+        if self.pk is not None:
+            self.load()
 
     def load(self):
         pass
@@ -58,8 +51,6 @@ class IPGroup(models.Model):
 
     def __str__(self):
         return self.name
-
-    __unicode__ = __str__
 
 
 def typed_ip_group(ip_group):
