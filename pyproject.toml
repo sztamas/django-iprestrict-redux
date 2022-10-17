@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "django-iprestrict-redux"
-version = "1.9.0"
+version = "1.9.1"
 description = "Django app + middleware to restrict access to all or sections of a Django project by client IP ranges"
 authors = ["Tamas Szabo <me@tamas-szabo.com>"]
 maintainers = ["Tamas Szabo <me@tamas-szabo.com>"]
