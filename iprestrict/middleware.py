@@ -4,6 +4,7 @@ import warnings
 from django.conf import settings
 from django.core import exceptions
 
+from .ip_utils import is_valid_ip_address
 from .models import ReloadRulesRequest
 from .restrictor import IPRestrictor
 
@@ -38,9 +39,12 @@ class IPRestrictMiddleware:
 
         url = request.path_info
         client_ip = self.extract_client_ip(request)
+        if not is_valid_ip_address(client_ip):
+            logger.warning(f"Denying access of {url} to INVALID IP")
+            raise exceptions.PermissionDenied
 
         if self.restrictor.is_restricted(url, client_ip):
-            logger.warning("Denying access of %s to %s" % (url, client_ip))
+            logger.warning(f"Denying access of {url} to {client_ip}")
             raise exceptions.PermissionDenied
 
         response = self.get_response(request)
@@ -74,7 +78,7 @@ class IPRestrictMiddleware:
         for proxy in proxies:
             if proxy not in self.trusted_proxies:
                 logger.warning(
-                    "Client IP %s forwarded by untrusted proxy %s" % (client_ip, proxy)
+                    f"Client IP {client_ip} forwarded by untrusted proxy {proxy}"
                 )
                 raise exceptions.PermissionDenied
 

@@ -1,3 +1,6 @@
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_ipv46_address
+
 IPv4 = "ipv4"
 IPv6 = "ipv6"
 
@@ -92,3 +95,11 @@ def _ip_to_number(ip, separator=".", group_size=2**8, base=10):
 
 def reject_empty(xs):
     return [x for x in xs if x]
+
+
+def is_valid_ip_address(s):
+    try:
+        validate_ipv46_address(s)
+        return True
+    except ValidationError:
+        return False
