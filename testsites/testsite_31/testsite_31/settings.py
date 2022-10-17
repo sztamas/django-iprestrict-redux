@@ -123,4 +123,5 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-GEOIP_PATH = '/opt/MaxMind/GeoIP2/'
+# GEOIP_PATH = '/opt/MaxMind/GeoIP2/'
+IPRESTRICT_GEOIP_ENABLED = False

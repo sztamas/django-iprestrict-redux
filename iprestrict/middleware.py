@@ -4,10 +4,14 @@ import warnings
 from django.conf import settings
 from django.core import exceptions
 
+from .ip_utils import is_valid_ip_address
 from .models import ReloadRulesRequest
 from .restrictor import IPRestrictor
 
 logger = logging.getLogger(__name__)
+
+
+UNKNOWN = "unknown"
 
 
 class IPRestrictMiddleware:
@@ -25,6 +29,9 @@ class IPRestrictMiddleware:
         self.trust_all_proxies = bool(
             get_setting("IPRESTRICT_TRUST_ALL_PROXIES", "TRUST_ALL_PROXIES", False)
         )
+        self.use_proxy_if_unknown = bool(
+            getattr(settings, "IPRESTRICT_USE_PROXY_IF_UNKNOWN", False)
+        )
 
     def __call__(self, request):
         if self.reload_rules:
@@ -32,9 +39,12 @@ class IPRestrictMiddleware:
 
         url = request.path_info
         client_ip = self.extract_client_ip(request)
+        if not is_valid_ip_address(client_ip):
+            logger.warning(f"Denying access of {url} to INVALID IP")
+            raise exceptions.PermissionDenied
 
         if self.restrictor.is_restricted(url, client_ip):
-            logger.warning("Denying access of %s to %s" % (url, client_ip))
+            logger.warning(f"Denying access of {url} to {client_ip}")
             raise exceptions.PermissionDenied
 
         response = self.get_response(request)
@@ -54,6 +64,13 @@ class IPRestrictMiddleware:
     def extract_client_ip_proxied_request(self, client_ip, forwarded_for):
         closest_proxy = client_ip
         client_ip = forwarded_for.pop(0)
+
+        if client_ip == UNKNOWN:
+            if self.use_proxy_if_unknown:
+                client_ip = closest_proxy
+            else:
+                raise exceptions.PermissionDenied
+
         if self.trust_all_proxies:
             return client_ip
 
@@ -61,7 +78,7 @@ class IPRestrictMiddleware:
         for proxy in proxies:
             if proxy not in self.trusted_proxies:
                 logger.warning(
-                    "Client IP %s forwarded by untrusted proxy %s" % (client_ip, proxy)
+                    f"Client IP {client_ip} forwarded by untrusted proxy {proxy}"
                 )
                 raise exceptions.PermissionDenied
 

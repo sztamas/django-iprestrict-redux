@@ -1,11 +1,8 @@
-# -*- coding: utf-8 -*-
 """Client-side wrapper lib around GeoIP.
 
 By using this we make the geoip module optional. ie. don't fail if the user opts out of using
 GEOIP.
 """
-from __future__ import unicode_literals
-
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 

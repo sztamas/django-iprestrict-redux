@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_ipv46_address
 
 IPv4 = "ipv4"
 IPv6 = "ipv6"
@@ -30,7 +30,7 @@ def ipv6_to_number(ip):
         ip = convert_mixed(ip)
     if "::" in ip:
         ip = explode(ip)
-    return _ip_to_number(ip, separator=":", group_size=2 ** 16, base=16)
+    return _ip_to_number(ip, separator=":", group_size=2**16, base=16)
 
 
 def explode(ip):
@@ -84,14 +84,22 @@ def cidr_to_range(ip, prefix_length):
     return (start, end)
 
 
-def _ip_to_number(ip, separator=".", group_size=2 ** 8, base=10):
+def _ip_to_number(ip, separator=".", group_size=2**8, base=10):
     parts = ip.split(separator)
     parts = [int(p, base) for p in reversed(parts)]
     nr = 0
     for i, d in enumerate(parts):
-        nr += (group_size ** i) * d
+        nr += (group_size**i) * d
     return nr
 
 
 def reject_empty(xs):
     return [x for x in xs if x]
+
+
+def is_valid_ip_address(s):
+    try:
+        validate_ipv46_address(s)
+        return True
+    except ValidationError:
+        return False
