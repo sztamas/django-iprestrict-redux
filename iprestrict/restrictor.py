@@ -1,7 +1,7 @@
 from django.utils import timezone
 
 
-class IPRestrictor(object):
+class IPRestrictor:
     rules = None
     last_reload = None
 
