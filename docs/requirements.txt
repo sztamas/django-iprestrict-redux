@@ -1,2 +1,2 @@
-# readthedocs.org fails to install Django and other dependencies.
-# Add dependencies needed to build the documentation here. Currently none...
+sphinx==5.3.0
+
