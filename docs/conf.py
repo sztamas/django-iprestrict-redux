@@ -41,7 +41,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'Django IPRestrict Redux'
-copyright = u'2012-2020, CCG - Murdoch University, Tamas Szabo'
+copyright = u'2012-2023, CCG - Murdoch University, Tamas Szabo'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
